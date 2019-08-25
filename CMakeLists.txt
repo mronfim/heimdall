@@ -13,8 +13,16 @@ include_directories(src/)
 
 include_directories(${SDL2_INCLUDE_DIRS})
 
+add_library(system STATIC
+    src/system/log.c
+    src/system/log.h
+    src/system/lt.h
+    src/system/stacktrace.c
+    src/system/stacktrace.h
+)
+
 add_executable(heimdall
     src/main.c
 )
 
-target_link_libraries(heimdall ${SDL2_LIBRARIES})
+target_link_libraries(heimdall ${SDL2_LIBRARIES} system)
