@@ -1,12 +1,18 @@
 #include <SDL2/SDL.h>
 
 #include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <time.h>
 
+#include "game.h"
 #include "system/log.h"
 #include "system/lt.h"
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
+
+const float MS_PER_UPDATE = 1000.0f / 30.0f;
 
 int main(int argc, char* argv[])
 {
@@ -68,14 +74,45 @@ int main(int argc, char* argv[])
 
     // ---------------------------------------------------------------------------------------
 
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-    SDL_RenderClear(renderer);
-    SDL_RenderPresent(renderer);
+    Game *const game = PUSH_LT(
+        lt,
+        create_game(renderer),
+        destroy_game);
+    if (game == NULL) {
+        RETURN_LT(lt, -1);
+    }
 
-    SDL_Delay(3000);
+    const Uint8 *const keyboard_state = SDL_GetKeyboardState(NULL);
 
-    SDL_DestroyWindow(window);
-    SDL_Quit();
+    SDL_StopTextInput();
+    SDL_Event e;
+
+    int64_t begin_frame_time = (int64_t) SDL_GetTicks();
+    float frame_lag = 0.0f;
+    while (!is_game_over(game)) {
+        int64_t current_frame_time = (int64_t) SDL_GetTicks();
+        int64_t elapsed_frame_time = current_frame_time - begin_frame_time;
+        begin_frame_time = current_frame_time;
+        frame_lag += elapsed_frame_time;
+
+        while (!is_game_over(game) && SDL_PollEvent(&e)) {
+            if (game_event(game, &e) < 0) {
+                RETURN_LT(lt, -1);
+            }
+        }
+
+
+        while (frame_lag >= MS_PER_UPDATE) {
+            if (game_update(game, (float) elapsed_frame_time / 1000.0f) < 0) {
+                RETURN_LT(lt, -1);
+            }
+            frame_lag -= MS_PER_UPDATE;
+        }
+
+        if (game_render(game) < 0) {
+            RETURN_LT(lt, -1);
+        }
+    }
 
     return 0;
 }

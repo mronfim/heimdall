@@ -19,10 +19,14 @@ add_library(system STATIC
     src/system/lt.h
     src/system/stacktrace.c
     src/system/stacktrace.h
+    src/system/h_alloc.c
+    src/system/h_alloc.h
 )
 
 add_executable(heimdall
     src/main.c
+    src/game.c
+    src/game.h
 )
 
 target_link_libraries(heimdall ${SDL2_LIBRARIES} system)
