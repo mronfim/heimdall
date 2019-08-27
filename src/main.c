@@ -109,6 +109,7 @@ int main(int argc, char* argv[])
             frame_lag -= MS_PER_UPDATE;
         }
 
+        // TODO: add frame lag to render function for render interpolation
         if (game_render(game) < 0) {
             RETURN_LT(lt, -1);
         }
