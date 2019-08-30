@@ -101,7 +101,6 @@ int main(int argc, char* argv[])
             }
         }
 
-
         while (frame_lag >= MS_PER_UPDATE) {
             if (game_update(game, (float) elapsed_frame_time / 1000.0f) < 0) {
                 RETURN_LT(lt, -1);
