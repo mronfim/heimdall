@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 project(Heimdall)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 find_package(SDL2 REQUIRED)
 
 if("${SDL2_LIBRARIES}" STREQUAL "")
@@ -13,20 +16,19 @@ include_directories(src/)
 
 include_directories(${SDL2_INCLUDE_DIRS})
 
-add_library(system STATIC
-    src/system/log.c
-    src/system/log.h
-    src/system/lt.h
-    src/system/stacktrace.c
-    src/system/stacktrace.h
-    src/system/h_alloc.c
-    src/system/h_alloc.h
+add_library(heimdall STATIC
+    src/heimdall/engine.h
+    src/heimdall/engine.cpp
+    src/heimdall/system/log.cpp
+    src/heimdall/system/log.h
+    src/heimdall/system/stacktrace.cpp
+    src/heimdall/system/stacktrace.h
+    src/heimdall/system/h_alloc.cpp
+    src/heimdall/system/h_alloc.h
 )
 
-add_executable(heimdall
-    src/main.c
-    src/game.c
-    src/game.h
+add_executable(main
+    src/main.cpp
 )
 
-target_link_libraries(heimdall ${SDL2_LIBRARIES} system)
+target_link_libraries(main ${SDL2_LIBRARIES} heimdall)

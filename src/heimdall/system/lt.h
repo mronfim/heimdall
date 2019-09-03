@@ -23,7 +23,7 @@ typedef struct {
 
 static inline Lt *create_lt(void)
 {
-    return calloc(1, sizeof(Lt));
+    return (Lt *)calloc(1, sizeof(Lt));
 }
 
 static inline void destroy_lt(Lt *lt)
@@ -55,11 +55,11 @@ static inline void *lt_push(Lt *lt, void *res, Dtor dtor)
     if (size >= lt->capacity) {
         if (lt->capacity == 0) {
             lt->capacity = LT_INITIAL_CAPACITY;
-            lt->slots = calloc(LT_INITIAL_CAPACITY, sizeof(Slot));
+            lt->slots = (Slot *)calloc(LT_INITIAL_CAPACITY, sizeof(Slot));
             lt->slots_end = lt->slots;
         } else {
             lt->capacity *= 2;
-            lt->slots = realloc(lt->slots, lt->capacity * sizeof(Slot));
+            lt->slots = (Slot *)realloc(lt->slots, lt->capacity * sizeof(Slot));
             lt->slots_end = lt->slots + size;
         }
     }
