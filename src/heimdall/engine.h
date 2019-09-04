@@ -1,5 +1,9 @@
 #pragma once
 #include <SDL.h>
+#include <memory>
+
+#include "entityManager.h"
+#include "world.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -17,11 +21,16 @@ public:
     Engine(Engine const &) = delete;
     void operator=(Engine const &) = delete;
 
+    bool Initialize();
     void Start();
     void Stop();
     virtual ~Engine();
 
+    World *getWorld();
+    SDL_Renderer *getRenderer() { return m_Renderer; }
+
 private:
+    bool m_Initialized{ false };
     bool m_isRunning{ false };
 
     SDL_Window *m_Window{ NULL };
@@ -30,9 +39,11 @@ private:
 
     const Uint8 *m_KeyboardState{ NULL };
 
+    std::unique_ptr<EntityManager> entityManager;
+    std::unique_ptr<World> world;
+
     Engine() {}
 
-    bool Initialize();
     void Run();
     void HandleEvent(SDL_Event *e);
     void Update(float delta);

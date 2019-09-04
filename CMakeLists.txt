@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(Heimdall)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(SDL2 REQUIRED)
@@ -19,6 +19,21 @@ include_directories(${SDL2_INCLUDE_DIRS})
 add_library(heimdall STATIC
     src/heimdall/engine.h
     src/heimdall/engine.cpp
+    src/heimdall/component.cpp
+    src/heimdall/component.h
+    src/heimdall/componentHandle.h
+    src/heimdall/componentManager.h
+    src/heimdall/componentMask.cpp
+    src/heimdall/componentMask.h
+    src/heimdall/entity.h
+    src/heimdall/entityHandle.h
+    src/heimdall/entityManager.cpp
+    src/heimdall/entityManager.h
+    src/heimdall/entityMap.h
+    src/heimdall/system.cpp
+    src/heimdall/system.h
+    src/heimdall/world.cpp
+    src/heimdall/world.h
     src/heimdall/system/log.cpp
     src/heimdall/system/log.h
     src/heimdall/system/stacktrace.cpp

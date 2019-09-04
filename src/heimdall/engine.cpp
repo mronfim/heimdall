@@ -2,7 +2,7 @@
 #include "system/stacktrace.h"
 #include "system/log.h"
 
-using namespace Heimdall;
+namespace Heimdall {
 
 const float MS_PER_UPDATE = 1000.0f / 30.0f;
 
@@ -18,8 +18,10 @@ void Engine::Start()
         return;
     }
 
-    if (Initialize()) {
+    if (m_Initialized) {
         Run();
+    } else {
+        log_fail("World cannot start, world was not initialized.\n");
     }
 }
 
@@ -85,6 +87,10 @@ bool Engine::Initialize()
         log_warn("Could not find any joy sticks\n");
     }
 
+    entityManager = std::make_unique<EntityManager>();
+    world = std::make_unique<World>(std::move(entityManager));
+
+    m_Initialized = true;
     return true;
 }
 
@@ -101,6 +107,8 @@ void Engine::Shutdown()
 
 void Engine::Run()
 {
+    world->init();
+
     m_KeyboardState = SDL_GetKeyboardState(NULL);
 
     SDL_StopTextInput();
@@ -142,7 +150,7 @@ void Engine::HandleEvent(SDL_Event *event)
 
 void Engine::Update(float delta)
 {
-
+    world->update(delta);
 }
 
 void Engine::Render(float alpha)
@@ -150,5 +158,14 @@ void Engine::Render(float alpha)
     SDL_SetRenderDrawColor(m_Renderer, 85, 0, 85, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(m_Renderer);
 
+    world->render(alpha);
+
     SDL_RenderPresent(m_Renderer);
+}
+
+World *Engine::getWorld()
+{
+    return world.get();
+}
+
 }
